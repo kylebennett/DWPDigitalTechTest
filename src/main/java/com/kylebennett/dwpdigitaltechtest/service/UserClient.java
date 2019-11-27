@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface UserClient {
 
+    String LONDON = "London";
+
     Collection<User> getAllUsers();
 
     Collection<User> getAllUsersFromCity(String city);
