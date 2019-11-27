@@ -28,12 +28,12 @@ class UserClientTest {
     UserClient client;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    void test_getAllUsers_200Response() {
+    void test_getAllUsers_200Response_usersReturned() {
 
         User user1 = new User();
         User user2 = new User();
@@ -44,7 +44,16 @@ class UserClientTest {
 
         Collection<User> users = client.getAllUsers();
 
-        assertThat(users.contains(user1));
-        assertThat(users.contains(user2));
+        assertThat(users).contains(user1, user2);
+    }
+
+    @Test
+    void test_getAllUsers_200Response_noUsersReturned() {
+
+        Mockito.when(mockTemplate.getForEntity(baseUrl + "/users", User[].class)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+
+        Collection<User> users = client.getAllUsers();
+
+        assertThat(users).isEmpty();
     }
 }

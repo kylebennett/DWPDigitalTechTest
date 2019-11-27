@@ -1,5 +1,7 @@
 package com.kylebennett.dwpdigitaltechtest.model;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.Objects;
 
 public class User {
@@ -81,5 +83,18 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(id, firstName, lastName);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("firstName", firstName)
+                .append("lastName", lastName)
+                .append("email", email)
+                .append("ipAddress", ipAddress)
+                .append("latitude", latitude)
+                .append("longitude", longitude)
+                .toString();
     }
 }
