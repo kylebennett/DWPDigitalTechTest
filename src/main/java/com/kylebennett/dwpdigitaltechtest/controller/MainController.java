@@ -2,6 +2,7 @@
 package com.kylebennett.dwpdigitaltechtest.controller;
 
 import com.kylebennett.dwpdigitaltechtest.model.User;
+import com.kylebennett.dwpdigitaltechtest.service.DistanceCalculatorService;
 import com.kylebennett.dwpdigitaltechtest.service.UserClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +21,14 @@ class MainController {
     @Autowired
     private UserClient userClient;
 
+    @Autowired
+    private DistanceCalculatorService distanceCalculatorService;
+
     @GetMapping(value = "/")
     String mainPage(final Model model) {
 
         Collection<User> allUsers = userClient.getAllUsers();
         model.addAttribute("allUsers", allUsers);
-
-        for (User u : allUsers) {
-            log.debug(u.toString());
-        }
 
         return "main";
     }

@@ -1,5 +1,6 @@
 package com.kylebennett.dwpdigitaltechtest.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Objects;
@@ -7,9 +8,12 @@ import java.util.Objects;
 public class User {
 
     private int id;
+    @JsonProperty("first_name")
     private String firstName;
+    @JsonProperty("last_name")
     private String lastName;
     private String email;
+    @JsonProperty("ip_address")
     private String ipAddress;
     private double latitude;
     private double longitude;
@@ -87,7 +91,7 @@ public class User {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
+        return new ToStringBuilder(this.getClass().getCanonicalName())
                 .append("id", id)
                 .append("firstName", firstName)
                 .append("lastName", lastName)

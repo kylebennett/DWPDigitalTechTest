@@ -2,7 +2,7 @@
 package com.kylebennett.dwpdigitaltechtest.controller;
 
 import com.kylebennett.dwpdigitaltechtest.model.User;
-import com.kylebennett.dwpdigitaltechtest.service.UserClient;
+import com.kylebennett.dwpdigitaltechtest.service.UserClientImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,10 +18,10 @@ import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MainControllerTest {
+class MainControllerTest {
 
     @Mock
-    UserClient mockUserClient;
+    UserClientImpl mockUserClient;
 
     Model model = new ConcurrentModel();
 
@@ -29,18 +29,18 @@ public class MainControllerTest {
     MainController controller;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
 
         MockitoAnnotations.initMocks(this);
     }
 
     @AfterEach
-    public void tearDown() throws Exception {
+    void tearDown() throws Exception {
 
     }
 
     @Test
-    public void testMainPage() throws Exception {
+    void testMainPage() throws Exception {
 
         Collection<User> users = new ArrayList<>();
         User user1 = new User();
