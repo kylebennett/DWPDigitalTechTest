@@ -1,6 +1,7 @@
 package com.kylebennett.dwpdigitaltechtest.service;
 
 import com.kylebennett.dwpdigitaltechtest.model.Coordinates;
+import com.kylebennett.dwpdigitaltechtest.model.Locations;
 import org.assertj.core.data.Percentage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,16 +14,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DistanceCalculatorServiceImplTest {
 
-    static final Coordinates Newcastle = new Coordinates(54.97328, -1.61396);
-    static final Coordinates Cardiff = new Coordinates(51.48, -3.18);
-    static final Coordinates Edinburgh = new Coordinates(55.95206, -3.19648);
-
-    DistanceCalculatorServiceImpl service = new DistanceCalculatorServiceImpl();
+    private DistanceCalculatorServiceImpl service = new DistanceCalculatorServiceImpl();
 
     @Test
     void test_calculateDistanceBetween2Points_SameCoordinates() {
 
-        double distance = service.calculateDistanceBetween2Points(Newcastle, Newcastle);
+        double distance = service.calculateDistanceBetween2Points(Locations.NEWCASTLE.getCoordinates(), Locations.NEWCASTLE.getCoordinates());
         assertThat(distance).isEqualTo(0);
 
     }
@@ -37,9 +34,9 @@ class DistanceCalculatorServiceImplTest {
 
     static Stream<Arguments> test_Coordinates() {
         return Stream.of(
-                Arguments.of(Newcastle, Cardiff, 250),
-                Arguments.of(Newcastle, Edinburgh, 91),
-                Arguments.of(Newcastle, DistanceCalculatorService.LONDON, 247)
+                Arguments.of(Locations.NEWCASTLE.getCoordinates(), Locations.CARDIFF.getCoordinates(), 250),
+                Arguments.of(Locations.NEWCASTLE.getCoordinates(), Locations.EDINBURGH.getCoordinates(), 91),
+                Arguments.of(Locations.NEWCASTLE.getCoordinates(), Locations.LONDON.getCoordinates(), 247)
         );
     }
 }

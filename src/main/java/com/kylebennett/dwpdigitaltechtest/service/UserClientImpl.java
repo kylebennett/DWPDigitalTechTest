@@ -30,11 +30,7 @@ public class UserClientImpl implements UserClient {
         log.debug("Getting Users");
         ResponseEntity<User[]> response = restTemplate.getForEntity(baseUrl + "/users", User[].class);
 
-        Collection<User> users = new ArrayList<>();
-
-        if (response.getBody() != null) {
-            users = Arrays.asList(response.getBody());
-        }
+        Collection<User> users = parseResponse(response);
 
         log.debug("[" + users.size() + "] Users returned");
         return users;
@@ -46,11 +42,7 @@ public class UserClientImpl implements UserClient {
         log.debug("Getting Users from City [" + city + "]");
         ResponseEntity<User[]> response = restTemplate.getForEntity(baseUrl + "/city/" + city + "/users", User[].class);
 
-        Collection<User> users = new ArrayList<>();
-
-        if (response.getBody() != null) {
-            users = Arrays.asList(response.getBody());
-        }
+        Collection<User> users = parseResponse(response);
 
         log.debug("[" + users.size() + "] Users returned from City [" + city + "]");
         return users;
@@ -63,5 +55,14 @@ public class UserClientImpl implements UserClient {
         ResponseEntity<User> response = restTemplate.getForEntity(baseUrl + "/user/" + id, User.class);
 
         return Optional.ofNullable(response.getBody());
+    }
+
+    private Collection<User> parseResponse(ResponseEntity<User[]> response) {
+        Collection<User> users = new ArrayList<>();
+
+        if (response.getBody() != null) {
+            users = Arrays.asList(response.getBody());
+        }
+        return users;
     }
 }

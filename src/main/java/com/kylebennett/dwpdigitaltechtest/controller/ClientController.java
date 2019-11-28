@@ -1,7 +1,6 @@
 
 package com.kylebennett.dwpdigitaltechtest.controller;
 
-import com.kylebennett.dwpdigitaltechtest.model.User;
 import com.kylebennett.dwpdigitaltechtest.service.DistanceCalculatorService;
 import com.kylebennett.dwpdigitaltechtest.service.UserClient;
 import org.slf4j.Logger;
@@ -11,12 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.Collection;
-
 @Controller
-class MainController {
+class ClientController {
 
-    private static final Logger log = LoggerFactory.getLogger(MainController.class);
+    private static final Logger log = LoggerFactory.getLogger(ClientController.class);
 
     @Autowired
     private UserClient userClient;
@@ -26,9 +23,6 @@ class MainController {
 
     @GetMapping(value = "/")
     String mainPage(final Model model) {
-
-        Collection<User> allUsers = userClient.getAllUsers();
-        model.addAttribute("allUsers", allUsers);
 
         return "main";
     }
