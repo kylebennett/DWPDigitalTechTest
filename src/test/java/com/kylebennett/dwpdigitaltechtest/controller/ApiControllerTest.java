@@ -3,75 +3,44 @@ package com.kylebennett.dwpdigitaltechtest.controller;
 import com.kylebennett.dwpdigitaltechtest.model.Coordinates;
 import com.kylebennett.dwpdigitaltechtest.model.Locations;
 import com.kylebennett.dwpdigitaltechtest.model.User;
-import com.kylebennett.dwpdigitaltechtest.service.DistanceCalculatorService;
-import com.kylebennett.dwpdigitaltechtest.service.UserClient;
+import com.kylebennett.dwpdigitaltechtest.service.UserDistanceService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@RunWith(SpringRunner.class)
+@WebMvcTest(ApiController.class)
 class ApiControllerTest {
 
-    @Mock
-    UserClient userClient;
+    @Autowired
+    private MockMvc mvc;
 
-    @Mock
-    DistanceCalculatorService distanceCalculatorService;
+    @MockBean
+    UserDistanceService userDistanceService;
 
-    @InjectMocks
-    ApiController controller;
-
-    private Coordinates close, far, london;
-    private User londonUser, closeUser, farUser;
-    private Collection<User> londonUsers;
-    private Collection<User> allUsers;
+    @MockBean
+    RestTemplate template;
 
     @BeforeEach
-    void setUp() throws Exception {
-
-        MockitoAnnotations.initMocks(this);
-
-        close = new Coordinates(5.0, 5.0);
-        far = new Coordinates(20.0, 20.0);
-
-        london = Locations.LONDON.getCoordinates();
-
-        londonUser = new User();
-        londonUser.setId(1);
-        londonUser.setLatitude(far.getLatitude());
-        londonUser.setLongitude(far.getLongitude());
-
-        closeUser = new User();
-        closeUser.setId(2);
-        closeUser.setLatitude(close.getLatitude());
-        closeUser.setLongitude(close.getLongitude());
-
-        farUser = new User();
-        farUser.setId(3);
-        farUser.setLatitude(far.getLatitude());
-        farUser.setLongitude(far.getLongitude());
-
-        londonUsers = new ArrayList<>();
-        londonUsers.add(londonUser);
-
-        allUsers = new ArrayList<>();
-        allUsers.add(londonUser);
-        allUsers.add(closeUser);
-        allUsers.add(farUser);
-
-        Mockito.when(userClient.getAllUsersFromCity(Locations.LONDON.getName())).thenReturn(londonUsers);
-        Mockito.when(userClient.getAllUsers()).thenReturn(allUsers);
-        Mockito.when(distanceCalculatorService.calculateDistanceBetween2Points(close, london)).thenReturn(25.0);
-        Mockito.when(distanceCalculatorService.calculateDistanceBetween2Points(far, london)).thenReturn(100.0);
+    void setUp() {
     }
 
     @AfterEach
@@ -79,39 +48,45 @@ class ApiControllerTest {
     }
 
     @Test
-    void test_getUsersWithin50MilesOfLondon() {
+    void test_getUsersWithin50MilesOfLondon() throws Exception {
 
-        Set<User> usersWithin50MilesOfLondon = controller.getUsersWithin50MilesOfLondon();
-        assertThat(usersWithin50MilesOfLondon).hasSize(2);
-        assertThat(usersWithin50MilesOfLondon).contains(londonUser, closeUser);
+        Coordinates london = Locations.LONDON.getCoordinates();
+        Set<User> users = new HashSet<>();
+        users.add(new User());
+
+        when(userDistanceService.getUsersWithinDistanceOfLocation(Locations.LONDON.getName(), 50.0,
+                london.getLatitude(), london.getLongitude()))
+                .thenReturn(users);
+
+        MvcResult result = mvc.perform(get("/api/users-within-fifty-miles-of-london")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(1)))
+                .andReturn();
+
+
     }
 
     @Test
-    void test_getUsersWithinDistanceOfLocation_allParameters() {
+    void test_getUsersWithinDistanceOfLocation() throws Exception {
 
-        Set<User> withinDistanceOfLocation = controller.getUsersWithinDistanceOfLocation(Locations.LONDON.getName(), 50.0, london.getLatitude(), london.getLongitude());
-        assertThat(withinDistanceOfLocation).hasSize(2);
-        assertThat(withinDistanceOfLocation).contains(londonUser, closeUser);
-    }
+        Coordinates london = Locations.LONDON.getCoordinates();
+        Set<User> users = new HashSet<>();
+        users.add(new User());
 
-    @Test
-    void test_getUsersWithinDistanceOfLocation_noParameters() {
+        when(userDistanceService.getUsersWithinDistanceOfLocation("locationName", 50.0,
+                1.0, 1.0))
+                .thenReturn(users);
 
-        Set<User> withinDistanceOfLocation = controller.getUsersWithinDistanceOfLocation(null, null, null, null);
-        assertThat(withinDistanceOfLocation).isEmpty();
-    }
-
-    @Test
-    void test_getUsersWithinDistanceOfLocation_nameOnly() {
-        Set<User> withinDistanceOfLocation = controller.getUsersWithinDistanceOfLocation(Locations.LONDON.getName(), null, null, null);
-        assertThat(withinDistanceOfLocation).hasSize(1);
-        assertThat(withinDistanceOfLocation).contains(londonUser);
-    }
-
-    @Test
-    void test_getUsersWithinDistanceOfLocation_coordsOnly() {
-        Set<User> withinDistanceOfLocation = controller.getUsersWithinDistanceOfLocation(null, 50.0, london.getLatitude(), london.getLongitude());
-        assertThat(withinDistanceOfLocation).hasSize(1);
-        assertThat(withinDistanceOfLocation).contains(closeUser);
+        MvcResult result = mvc.perform(get("/api/users-within-distance-of-location")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .param("locationName", "locationName")
+                .param("distance", "50.0")
+                .param("locationLat", "1.0")
+                .param("locationLong", "1.0"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andReturn();
     }
 }

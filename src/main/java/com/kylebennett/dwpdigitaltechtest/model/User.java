@@ -7,6 +7,7 @@ import java.util.Objects;
 
 public class User {
 
+    //Json properties
     private int id;
     @JsonProperty("first_name")
     private String firstName;
@@ -17,6 +18,10 @@ public class User {
     private String ipAddress;
     private double latitude;
     private double longitude;
+
+    // calculated results
+    private String city;
+    private double distanceFromCoords;
 
     public int getId() {
         return id;
@@ -74,6 +79,22 @@ public class User {
         this.longitude = longitude;
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public double getDistanceFromCoords() {
+        return distanceFromCoords;
+    }
+
+    public void setDistanceFromCoords(double distanceFromCoords) {
+        this.distanceFromCoords = distanceFromCoords;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -91,7 +112,7 @@ public class User {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this.getClass().getCanonicalName())
+        return new ToStringBuilder(this)
                 .append("id", id)
                 .append("firstName", firstName)
                 .append("lastName", lastName)

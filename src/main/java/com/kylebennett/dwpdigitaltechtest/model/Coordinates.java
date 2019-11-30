@@ -38,7 +38,7 @@ public class Coordinates {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this.getClass().getCanonicalName())
+        return new ToStringBuilder(this)
                 .append("latitude", latitude)
                 .append("longitude", longitude)
                 .toString();

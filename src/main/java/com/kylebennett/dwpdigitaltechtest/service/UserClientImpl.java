@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -44,6 +45,10 @@ public class UserClientImpl implements UserClient {
 
         Collection<User> users = parseResponse(response);
 
+        for (User u : users) {
+            u.setCity(city);
+        }
+
         log.debug("[" + users.size() + "] Users returned from City [" + city + "]");
         return users;
     }
@@ -60,7 +65,7 @@ public class UserClientImpl implements UserClient {
     private Collection<User> parseResponse(ResponseEntity<User[]> response) {
         Collection<User> users = new ArrayList<>();
 
-        if (response.getBody() != null) {
+        if (response.getStatusCode().equals(HttpStatus.OK) && response.getBody() != null) {
             users = Arrays.asList(response.getBody());
         }
         return users;

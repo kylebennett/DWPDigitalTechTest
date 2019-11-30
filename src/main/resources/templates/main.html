@@ -1,13 +1,61 @@
 <!DOCTYPE HTML>
 <html layout:decorate="~{fragments/layout}" xmlns:layout="http://www.w3.org/1999/xhtml"
->
+      xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>DWP Digital Tech Test</title>
 </head>
 <body>
 <div class="container" layout:fragment="content">
 
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">DWP Digital Tech Test - Kyle Bennett</h1>
+            <p class="lead">Build an API which calls this API, and returns people who are listed as either living in
+                London,
+                or whose current coordinates are within 50 miles of London. Push the answer to Github, and send us a
+                link.</p>
+        </div>
+    </div>
 
+    <form action="#" th:action="@{/}" th:object="${submission}" method="post">
+
+        <div class="form-group row">
+            <label for="locationName" class="col-sm-3 col-form-label">Location Name: </label>
+            <div class="col-sm-9">
+                <input class="form-control " type="text" value="London" th:field="*{locationName}" id="locationName"/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="locationName" class="col-sm-3 col-form-label">Distance From coordinates (miles):</label>
+            <div class="col-sm-9">
+                <input class="form-control" type="number" value="50" th:field="*{distance}" id="distance"
+                       th:errorclass="is-invalid"/>
+                <small class="form-text text-muted text-danger" role="alert" th:if="${#fields.hasErrors('distance')}"
+                       th:errors="*{distance}">DistanceError</small>
+            </div>
+        </div>
+
+        <div class="form-group form-row">
+            <div class="col">
+                <label for="locationlat">Latitude</label>
+                <input class="form-control" type="number" value="51.50853" th:field="*{locationLat}" id="locationLat"
+                       th:errorclass="is-invalid"/>
+                <small class="form-text text-muted text-danger" role="alert" th:if="${#fields.hasErrors('locationLat')}"
+                       th:errors="*{locationLat}">LatitudeError</small>
+            </div>
+            <div class="col">
+                <label for="locationlong">Longitude</label>
+                <input class="form-control" type="number" value="" th:field="*{locationLong}" id="locationLong"
+                       th:errorclass="is-invalid"/>
+                <small class="form-text text-muted text-danger" th:if="${#fields.hasErrors('locationLong')}"
+                       th:errors="*{locationLong}">LongitudeError</small>
+            </div>
+        </div>
+
+        <input class="btn btn-primary" type="submit" value="Submit"/>
+
+    </form>
 </div>
 </body>
 </html>

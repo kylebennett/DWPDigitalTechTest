@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html layout:decorate="~{fragments/layout}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>DWP Digital Tech Test</title>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <h2>
+        Found
+        <th:block th:text="${#lists.size(users)}"/>
+        Users from
+        <th:block th:text="${submission.locationName}"/>
+        or within
+        <th:block th:text="${submission.distance}"/>
+        miles of (
+        <th:block th:text="${submission.locationLat}"/>
+        ,
+        <th:block th:text="${submission.locationLong}"/>
+        )
+    </h2>
+
+    <p><a href="/">Back</a></p>
+
+    <div class="container">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item" th:each="user : ${users}">
+                <h3>
+                    <th:block th:text="${user.id}"/>
+                    -
+                    <th:block th:text="${user.firstName}"/>
+                    <th:block th:text="${user.lastName}"/>
+                </h3>
+                <h4 th:if="${user.city}" th:text="${user.city}"/>
+                <h4 th:if="${user.distanceFromCoords}">
+                    <th:block th:text="${#numbers.formatDecimal(user.distanceFromCoords,1,2)}"/>
+                    miles away
+                </h4>
+                <p th:text="${user.email}"/>
+                <p th:text="${user.ipAddress}"/>
+                <p>[
+                    <th:block th:text="${user.latitude}"/>
+                    ,
+                    <th:block th:text="${user.longitude}"/>
+                    ]
+                </p>
+            </li>
+        </ul>
+    </div>
+
+    <p><a href="/">Back</a></p>
+</div>
+</body>
+</html>
