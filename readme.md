@@ -18,15 +18,17 @@ on screen.
 
 To build the solution run the following commands from the root folder:
 
+```
 mvn clean install
 
 java -jar target/dwp-digital-tech-test-0.0.1-SNAPSHOT.jar
+```
 
 ### How to use
 
 The solution offers 2 methods of getting the specified users:
 
-##### Api Call
+#### Api Call
 
 The solution has 2 GET rest endpoints. One to return users within 50 miles of London 
 and one that allows parameters to determine the distance and location to use in the 
@@ -34,15 +36,15 @@ search.
 
 To return all users within 50 miles of London:
 
-GET localhost:9090/api/users-within-fifty-miles-of-london
+GET http://localhost:9090/api/users-within-fifty-miles-of-london
 
 To search with different parameters:
 
-GET localhost:9090/api/users-within-distance-of-location?distance=\<distance>&locationName=\<cityname>&locationLat=\<locationLatitude>&locationLong=\<locationLongitude> 
+GET http://localhost:9090/api/users-within-distance-of-location?distance=50&locationName=cityname&locationLat=locationLatitude&locationLong=locationLongitude 
 
-##### Web Form
+#### Web Form
 
-Navigate to localhost:9090
+Navigate to http://localhost:9090
 
 Fill in the form with the city, distance and coordinates and click submit. 
 For the purposes of this test the default form values will return users within
