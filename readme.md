@@ -38,9 +38,9 @@ To return all users within 50 miles of London:
 
 GET http://localhost:9090/api/users-within-fifty-miles-of-london
 
-To search with different parameters:
+To search with different parameters, replace the values in the angle brackets:
 
-GET http://localhost:9090/api/users-within-distance-of-location?distance=50&locationName=cityname&locationLat=locationLatitude&locationLong=locationLongitude 
+GET `http://localhost:9090/api/users-within-distance-of-location?distance=<distance>&locationName=<cityname>&locationLat=<locationLatitude>&locationLong=<locationLongitude>`
 
 #### Web Form
 
