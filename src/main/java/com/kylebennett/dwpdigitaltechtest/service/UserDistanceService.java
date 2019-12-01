@@ -1,13 +1,11 @@
 package com.kylebennett.dwpdigitaltechtest.service;
 
-import com.kylebennett.dwpdigitaltechtest.model.User;
-
-import java.util.Set;
+import com.kylebennett.dwpdigitaltechtest.model.SearchResult;
 
 public interface UserDistanceService {
 
-    Set<User> getUsersWithinDistanceOfLocation(String locationName,
-                                               Double distance,
-                                               Double locationLatitude,
-                                               Double locationLongitude);
+    SearchResult getUsersWithinDistanceOfLocation(String locationName,
+                                                  Double distance,
+                                                  Double locationLatitude,
+                                                  Double locationLongitude);
 }

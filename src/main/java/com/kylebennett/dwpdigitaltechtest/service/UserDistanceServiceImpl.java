@@ -1,6 +1,7 @@
 package com.kylebennett.dwpdigitaltechtest.service;
 
 import com.kylebennett.dwpdigitaltechtest.model.Coordinates;
+import com.kylebennett.dwpdigitaltechtest.model.SearchResult;
 import com.kylebennett.dwpdigitaltechtest.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +22,9 @@ public class UserDistanceServiceImpl implements UserDistanceService {
     private DistanceCalculatorService distanceCalculatorService;
 
     @Override
-    public Set<User> getUsersWithinDistanceOfLocation(String locationName, Double distance, Double locationLatitude, Double locationLongitude) {
+    public SearchResult getUsersWithinDistanceOfLocation(String locationName, Double distance, Double locationLatitude, Double locationLongitude) {
 
+        SearchResult results = new SearchResult();
         Set<User> users = new HashSet<>();
 
         // If a location name has been provided look up users from that city
@@ -34,16 +36,43 @@ public class UserDistanceServiceImpl implements UserDistanceService {
         }
 
         // If coordinates and distance are provided find all users with in range
-        if (distance != null && distance > 0 && locationLatitude != null && locationLongitude != null) {
+        if (distance != null && locationLatitude != null && locationLongitude != null) {
             log.debug("Getting users within [{}] miles of [{} , {}]", distance, locationLatitude, locationLongitude);
-            Coordinates coords = new Coordinates(locationLatitude, locationLongitude);
-            users.addAll(getUsersWithinRangeOfCoords(distance, coords));
+
+            boolean validParams = true;
+
+            if (distance < 0) {
+                //invalid distance
+                results.getErrorMessages().add("Distance must be greater than 0");
+                validParams = false;
+            }
+
+
+            if (locationLatitude > 90 || locationLatitude < -90) {
+                //invalid latitude
+                results.getErrorMessages().add("Latitude must be must be between 90 and -90");
+                validParams = false;
+            }
+
+            if (locationLongitude > 180 || locationLongitude < -180) {
+                //invalid longitude
+                results.getErrorMessages().add("Longitude must be between 180 and -180");
+                validParams = false;
+            }
+
+            if (validParams) {
+                Coordinates coords = new Coordinates(locationLatitude, locationLongitude);
+                users.addAll(getUsersWithinRangeOfCoords(distance, coords));
+            }
+
         } else {
             log.debug("No coordinates provided");
         }
 
         log.debug("[{}] users found", users.size());
-        return users;
+        results.setUsers(users);
+
+        return results;
     }
 
     private List<User> getUsersWithinRangeOfCoords(double distance, Coordinates location) {

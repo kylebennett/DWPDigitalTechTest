@@ -4,7 +4,7 @@ package com.kylebennett.dwpdigitaltechtest.controller;
 import com.kylebennett.dwpdigitaltechtest.model.Coordinates;
 import com.kylebennett.dwpdigitaltechtest.model.FormSubmission;
 import com.kylebennett.dwpdigitaltechtest.model.Locations;
-import com.kylebennett.dwpdigitaltechtest.model.User;
+import com.kylebennett.dwpdigitaltechtest.model.SearchResult;
 import com.kylebennett.dwpdigitaltechtest.service.UserDistanceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
-import java.util.Set;
 
 @Controller
 class ClientController {
@@ -51,12 +50,13 @@ class ClientController {
             return "main";
         }
 
-        final Set<User> usersWithinDistanceOfLocation = userDistanceService.getUsersWithinDistanceOfLocation(submission.getLocationName(),
+        final SearchResult usersWithinDistanceOfLocation = userDistanceService.getUsersWithinDistanceOfLocation(submission.getLocationName(),
                 submission.getDistance(),
                 submission.getLocationLat(),
                 submission.getLocationLong());
 
-        model.addAttribute("users", usersWithinDistanceOfLocation);
+        model.addAttribute("errors", usersWithinDistanceOfLocation.getErrorMessages());
+        model.addAttribute("users", usersWithinDistanceOfLocation.getUsers());
 
         return "results";
     }

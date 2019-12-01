@@ -2,6 +2,7 @@ package com.kylebennett.dwpdigitaltechtest.controller;
 
 import com.kylebennett.dwpdigitaltechtest.model.Coordinates;
 import com.kylebennett.dwpdigitaltechtest.model.Locations;
+import com.kylebennett.dwpdigitaltechtest.model.SearchResult;
 import com.kylebennett.dwpdigitaltechtest.model.User;
 import com.kylebennett.dwpdigitaltechtest.service.UserDistanceService;
 import org.junit.jupiter.api.AfterEach;
@@ -54,17 +55,18 @@ class ApiControllerTest {
         Set<User> users = new HashSet<>();
         users.add(new User());
 
+        SearchResult searchResult = new SearchResult();
+        searchResult.setUsers(users);
+
         when(userDistanceService.getUsersWithinDistanceOfLocation(Locations.LONDON.getName(), 50.0,
                 london.getLatitude(), london.getLongitude()))
-                .thenReturn(users);
+                .thenReturn(searchResult);
 
         MvcResult result = mvc.perform(get("/api/users-within-fifty-miles-of-london")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.users", hasSize(1)))
                 .andReturn();
-
-
     }
 
     @Test
@@ -74,9 +76,12 @@ class ApiControllerTest {
         Set<User> users = new HashSet<>();
         users.add(new User());
 
+        SearchResult searchResult = new SearchResult();
+        searchResult.setUsers(users);
+
         when(userDistanceService.getUsersWithinDistanceOfLocation("locationName", 50.0,
                 1.0, 1.0))
-                .thenReturn(users);
+                .thenReturn(searchResult);
 
         MvcResult result = mvc.perform(get("/api/users-within-distance-of-location")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -86,7 +91,7 @@ class ApiControllerTest {
                 .param("locationLat", "1.0")
                 .param("locationLong", "1.0"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$.users", hasSize(1)))
                 .andReturn();
     }
 }

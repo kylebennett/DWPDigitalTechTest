@@ -21,6 +21,12 @@
     </h2>
 
     <p><a href="/">Back</a></p>
+    <div th:if="${#lists.size(errors) > 0}">
+        <th:block th:each="error : ${errors}">
+            <p class="alert alert-danger" th:text="${error}"/>
+        </th:block>
+    </div>
+
 
     <div class="container">
         <ul class="list-group list-group-flush">
